@@ -54,6 +54,7 @@ body {
 }
 .layout-dashboard .ant-layout-sider.sider-primary .brand {
   font-weight: 600;
+  text-align: center;
 }
 .layout-dashboard .ant-layout-sider.sider-primary .brand span {
   vertical-align: middle;
