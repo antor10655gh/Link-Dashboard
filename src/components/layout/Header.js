@@ -257,7 +257,7 @@ function Header({
   const hideDrawer = () => setVisible(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("token");
     window.location.reload();
   }
 
@@ -267,7 +267,7 @@ function Header({
         {setting}
       </div>
       <Row gutter={[24, 0]}>
-        <Col span={24} md={6}>
+        {/* <Col span={24} md={6}>
           <Breadcrumb>
             <Breadcrumb.Item>
               <NavLink to="/">Pages</NavLink>
@@ -284,8 +284,8 @@ function Header({
               {subName.replace("/", "")}
             </span>
           </div>
-        </Col>
-        <Col span={24} md={18} className="header-control">
+        </Col> */}
+        <Col span={24} md={24} className="header-control">
           <Badge size="small" count={4}>
             <Dropdown overlay={menu} trigger={["click"]}>
               <a

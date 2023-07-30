@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Users from "./pages/Users";
 
 function App() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("token"));
   return (
     <div className="App">
       {
@@ -24,7 +24,7 @@ function App() {
             <Route exact path="/users" component={Users} />
             <Route exact path="/billing" component={Billing} />
             <Route exact path="/rtl" component={Rtl} />
-            <Route exact path="/profile" component={Profile} />
+            <Route exact path="/profile/:id" component={Profile} />
             <Redirect from="*" to="/dashboard" />
           </Main>
         </Switch> :
