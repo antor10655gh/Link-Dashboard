@@ -256,6 +256,11 @@ function Header({
   const showDrawer = () => setVisible(true);
   const hideDrawer = () => setVisible(false);
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    window.location.reload();
+  }
+
   return (
     <>
       <div className="setting-drwer" onClick={showDrawer}>
@@ -409,10 +414,7 @@ function Header({
               </div>
             </div>
           </Drawer>
-          <Link to="/sign-in" className="btn-sign-in">
-            {profile}
-            <span>Sign in</span>
-          </Link>
+          <Button onClick={handleLogout} type="primary">Logout</Button>
           <Input
             className="header-search"
             placeholder="Type here..."

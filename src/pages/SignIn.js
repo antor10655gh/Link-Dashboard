@@ -1,20 +1,66 @@
 import React from 'react';
 import logo from '../assets/images/logo.png';
 import { Button, Col, Form, Input, Layout, Row, Switch, Typography, message } from 'antd';
+import { toast } from 'react-toastify';
 const { Title } = Typography;
 const {Content } = Layout;
 
+
 const SignIn = () => {
+
   const [checked, setChecked] = React.useState(true);
   const onChange = (checked) => {
     console.log(`switch to ${checked}`);
     setChecked(checked);
   }
+  
   const onFinish = (values) =>{
     values.remember = checked;
     if(values){
-      localStorage.setItem('user', JSON.stringify(values));
-      window.location.reload();
+      fetch('https://chat.linkfy.org/api/v1/admin/login', {
+        method: 'POST',
+        body: JSON.stringify(values),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.message);
+        if(data.message === 'Login successful'){
+          toast.success('🎉 Wow Login Success!', {
+            position: "top-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          setTimeout(() => {
+            localStorage.setItem('user', JSON.stringify(data));
+            window.location.href = '/';
+          }, 1200);
+          
+        } else{
+          toast.error('🚨 Admin Not Found!', {
+            position: "top-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          setTimeout(() => {
+            window.location.reload();
+          }, 1200);
+        }
+      })
+      // localStorage.setItem('user', JSON.stringify(values));
+      
     }else{
       message.error('Please fill all fields');
     }
