@@ -4,13 +4,33 @@ import {
   Row,
   Typography,
 } from "antd";
-
+import { useEffect, useState, useRef } from "react";
 import Echart from "../components/chart/EChart";
 import LineChart from "../components/chart/LineChart";
 function Home() {
+  const [users, setUsers] = useState([]);
+  console.log(users);
+
   const { Title } = Typography;
 
-  const dollor = [
+  const token = JSON.parse(localStorage.getItem("token"));
+
+  useEffect(() => {
+    fetch('https://chat.linkfy.org/api/v1/user', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            setUsers(data);
+          })
+  }, []);
+
+  const dollar = [
     <svg
       width="22"
       height="22"
@@ -98,31 +118,45 @@ function Home() {
   ];
   const count = [
     {
-      today: "Today’s Sales",
-      title: "$53,000",
-      persent: "+30%",
-      icon: dollor,
+      today: "Total User",
+      title: `${users?.length}`,
+      icon:  profile,
       bnb: "bnb2",
     },
     {
-      today: "Today’s Users",
+      today: "Total Room",
       title: "3,200",
-      persent: "+20%",
-      icon: profile,
+      icon: cart,
       bnb: "bnb2",
     },
     {
-      today: "New Clients",
+      today: "Online Users",
       title: "+1,200",
-      persent: "-20%",
       icon: heart,
       bnb: "redtext",
     },
     {
-      today: "New Orders",
-      title: "$13,200",
-      persent: "10%",
+      today: "Offline Users",
+      title: "+13,200",
       icon: cart,
+      bnb: "bnb2",
+    },
+    {
+      today: "Restricted Users",
+      title: "+13,200",
+      icon: cart,
+      bnb: "bnb2",
+    },
+    {
+      today: "Pending Requests",
+      title: "+13,200",
+      icon: cart,
+      bnb: "bnb2",
+    },
+    {
+      today: "Daily Payment",
+      title: "+13,200",
+      icon: dollar,
       bnb: "bnb2",
     },
   ];
@@ -147,7 +181,7 @@ function Home() {
                     <Col xs={18}>
                       <span>{c.today}</span>
                       <Title level={3}>
-                        {c.title} <small className={c.bnb}>{c.persent}</small>
+                        {c.title}
                       </Title>
                     </Col>
                     <Col xs={6}>

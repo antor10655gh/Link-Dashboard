@@ -28,7 +28,7 @@ import avtar from "../../assets/images/team-2.jpg";
 
 const ButtonContainer = styled.div`
   .ant-btn-primary {
-    background-color: #1890ff;
+    background-color: #AB1A93!important;
   }
   .ant-btn-success {
     background-color: #52c41a;
@@ -43,7 +43,7 @@ const ButtonContainer = styled.div`
     border-radius: 5px;
   }
   .ant-switch-active {
-    background-color: #1890ff;
+    background-color: #AB1A93;
   }
 `;
 
@@ -263,9 +263,9 @@ function Header({
 
   return (
     <>
-      <div className="setting-drwer" onClick={showDrawer}>
+      {/* <div className="setting-drwer" onClick={showDrawer}>
         {setting}
-      </div>
+      </div> */}
       <Row gutter={[24, 0]}>
         {/* <Col span={24} md={6}>
           <Breadcrumb>
@@ -329,7 +329,7 @@ function Header({
                   <ButtonContainer>
                     <Button
                       type="primary"
-                      onClick={() => handleSidenavColor("#1890ff")}
+                      onClick={() => handleSidenavColor("#AB1A93")}
                     >
                       1
                     </Button>
@@ -414,7 +414,7 @@ function Header({
               </div>
             </div>
           </Drawer>
-          <Button onClick={handleLogout} type="primary">Logout</Button>
+          <Button onClick={handleLogout} type="primary" style={{background: "#AB1A93", border: "none", color: "white"}}>Logout</Button>
           <Input
             className="header-search"
             placeholder="Type here..."

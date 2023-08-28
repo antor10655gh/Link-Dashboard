@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Row,
   Col,
@@ -30,13 +30,35 @@ import convesionImg5 from "../assets/images/face-2.jpg";
 import project1 from "../assets/images/home-decor-1.jpeg";
 import project2 from "../assets/images/home-decor-2.jpeg";
 import project3 from "../assets/images/home-decor-3.jpeg";
+import { useParams } from 'react-router-dom';
+import SingleProfile from "../components/shared/profile/SingleProfile";
 
 function Profile() {
-  
+  const [profile, setProfile] = useState({});
+  const {id} = useParams();
+
+  const token = JSON.parse(localStorage.getItem("token"));
+
+  useEffect(() => {
+    fetch(
+      `https://chat.linkfy.org/api/v1/user/${id}`
+    ,{
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json.data[0]);
+        setProfile(json.data[0]);
+      });
+  }, []);
 
   return (
     <>
-      
+      <SingleProfile profile={profile} />
     </>
   );
 }

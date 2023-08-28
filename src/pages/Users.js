@@ -6,17 +6,129 @@ import {
     Button,
     Modal,
     Space,
+    Input
   } from "antd";
+  import Highlighter from 'react-highlight-words';
   import { toast } from 'react-toastify';
-  import { EyeOutlined, DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
-  import { useEffect, useState } from "react";
+  import { EyeOutlined, DeleteOutlined, ExclamationCircleOutlined, SearchOutlined } from "@ant-design/icons";
+  import { useEffect, useState, useRef } from "react";
   import { Link } from "react-router-dom";
+import Loader from "../components/shared/loader/Loader";
   const { confirm } = Modal;
   const { Column } = Table;
   
   function Users() {
     const [users, setUsers] = useState([]);
     const [userUpdate, setUserUpdate] = useState(false);
+
+
+    // user search functionality
+    const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const searchInput = useRef(null);
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText('');
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters
+    }) => (
+      <div
+        style={{
+          padding: 8
+        }}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: 'block'
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90
+            }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: '#ffc069',
+            padding: 0
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      )
+  });
    
     useEffect(() => {
       // Replace 'your-bearer-token' with the actual Bearer token you have
@@ -35,7 +147,6 @@ import {
           if (response.ok) {
             const data = await response.json();
             setUsers(data.reverse());
-            console.log(data);
           } else {
             console.error('Error while fetching data:', response);
           }
@@ -77,10 +188,20 @@ import {
         }
       });
     };
+
+    const [isLoading, setIsLoading] = useState(false);
+    
+    useEffect(() => {
+      setTimeout(() => {
+        setIsLoading(true)
+      }, 1500)
+    })
     
     return (
       <>
-        <div className="tabled">
+        {
+          isLoading ?
+          <div className="tabled">
           <Row gutter={[24, 0]}>
             <Col xs="24" xl={24}>
               <Card
@@ -90,23 +211,18 @@ import {
               >
                 <div className="table-responsive">
                   <Table dataSource={users} className="ant-border-space">
-                    <Column title="U. Id" dataIndex="uid" key="uid" />
+                    <Column title="UID" dataIndex="uid" key="uid" {...getColumnSearchProps("uid")} />
                     <Column title="Name" dataIndex="userName" key="userName" />
-                    <Column title="Email" dataIndex="email" key="email" />
+                    <Column title="Email" dataIndex="email" key="email" {...getColumnSearchProps("email")} />
                     <Column title="Phone" dataIndex="userPhone" key="userPhone" />
                     <Column title="Gender" dataIndex="gender" key="gender" />
                     <Column title="DOB" dataIndex="dob" key="dob" />
-                    <Column title="Age" key="age" render={(_, record) => (
-                      <Space size="middle">
-                        {new Date().getFullYear() - new Date(record.dob).getFullYear()}
-                      </Space>
-                    )} />
                     <Column
-                      title="Action"
-                      key="action"
+                      title="View"
+                      key="view"
                       render={(_, record) => (
                         <Space size="middle">
-                          <Button style={{lineHeight: 0}} type="primary">
+                          <Button style={{lineHeight: 0, background:'#AB1A93', border:'none'}} type="primary">
                             <Link to={`/profile/${record._id}`}>
                               <EyeOutlined style={{fontSize: '18px'}} />
                             </Link>
@@ -123,6 +239,9 @@ import {
             </Col>
           </Row>
         </div>
+        :
+        <Loader />
+        }
       </>
     );
   }
