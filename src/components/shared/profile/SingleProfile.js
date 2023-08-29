@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import "./SingleProfile.css";
-import { Tabs } from "antd";
+import { Button, Tabs } from "antd";
 import * as timeago from "timeago.js";
-import { AndroidOutlined, RightOutlined } from "@ant-design/icons";
+import {
+  AndroidOutlined,
+  PauseCircleOutlined,
+  PlayCircleOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 
 const SingleProfile = ({ profile }) => {
   const journeyTime = timeago.format(`${profile.createdAt}`, "en_US");
@@ -13,7 +18,13 @@ const SingleProfile = ({ profile }) => {
 
   const parts = email.split("@");
 
-  const age = new Date().getFullYear() - new Date(profile.dob).getFullYear()
+  const age = new Date().getFullYear() - new Date(profile.dob).getFullYear();
+
+  const [recording, setRecording] = useState(false);
+
+  const handleRecord = () => {
+    setRecording(!recording);
+  };
 
   return (
     <div>
@@ -122,24 +133,71 @@ const SingleProfile = ({ profile }) => {
               </div>
             </Tabs.TabPane>
             <Tabs.TabPane tab="Login Activity" key="2">
-              <p>{profile?.userName} * <span style={{ color: "#AB1A93", fontWeight: "bold"}}>Link</span> </p>
+              <p>
+                {profile?.userName} *{" "}
+                <span style={{ color: "#AB1A93", fontWeight: "bold" }}>
+                  Link
+                </span>{" "}
+              </p>
               <h1>Account login activity</h1>
               <p>You're currently logged in on these devices:</p>
               <div className="account-login-activity-top">
                 <div>
-                <AndroidOutlined style={{ fontSize: "30px",  }} />
+                  <AndroidOutlined style={{ fontSize: "30px" }} />
                 </div>
                 <div className="account-login-activity-top-location">
                   <h3>Realme 8 Pro</h3>
                   <p>Dhaka, Bangladesh</p>
                 </div>
                 <div>
-                <RightOutlined />
+                  <RightOutlined />
                 </div>
               </div>
             </Tabs.TabPane>
             <Tabs.TabPane tab="User Activity" key="3">
               Content of Tab Pane 2
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Action" key="4">
+              <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+                <Button
+                  style={{
+                    lineHeight: 0,
+                    background: "#D71313",
+                    border: "none",
+                  }}
+                  type="primary"
+                >
+                  Block
+                </Button>
+                <Button
+                  style={{
+                    lineHeight: 0,
+                    background: "#F94C10",
+                    border: "none",
+                  }}
+                  type="primary"
+                >
+                  Temporary Block
+                </Button>
+                <Button
+                  style={{
+                    lineHeight: 0,
+                    background: "#76A21E",
+                    border: "none",
+                  }}
+                  type="primary"
+                >
+                  Unblock
+                </Button>
+                <Button
+                  onClick={handleRecord}
+                  icon={
+                    recording ? <PauseCircleOutlined /> : <PlayCircleOutlined />
+                  }
+                >
+                  {recording ? "Stop Recording" : "Start Recording"}
+                </Button>
+              </div>
             </Tabs.TabPane>
           </Tabs>
         </div>

@@ -96,7 +96,7 @@ const CallHistory = () => {
           </span>
         </h1>
       </div>
-      <div>
+      <div style={{ marginTop: "20px" }}>
         <Tabs>
           <Tabs.TabPane tab="Incoming History" key="1">
             <Table
