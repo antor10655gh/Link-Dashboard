@@ -16,6 +16,10 @@ import {
   DeleteOutlined,
   ExclamationCircleOutlined,
   SearchOutlined,
+  CloudDownloadOutlined,
+  PlayCircleOutlined,
+  AudioOutlined,
+  PauseCircleOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
@@ -165,12 +169,12 @@ function CallRecords() {
 
   const showConfirm = (id) => {
     confirm({
-      title: "Do you Want to delete these items?",
-      icon: <ExclamationCircleOutlined />,
+      title: "Do you want to listen to the call record?",
+      icon: <AudioOutlined />,
       content:
         "After click on delete then your item will be delete permanently.",
-      okText: "Delete",
-      okType: "danger",
+      okText: "Ok",
+      okType: "Primary",
 
       onOk() {
         fetch(`https://chat.linkfy.org/api/v1/user/${id}`, {
@@ -234,8 +238,8 @@ function CallRecords() {
                     />
                     <Column title="Country" dataIndex="country" key="country" />
                     <Column
-                      title="View"
-                      key="view"
+                      title="Action"
+                      key="Action"
                       render={(_, record) => (
                         <Space size="middle">
                           <Button
@@ -246,13 +250,10 @@ function CallRecords() {
                             }}
                             type="primary"
                           >
-                            <Link to={`/profile/${record._id}`}>
+                            <Link to={`/call_history/${record._id}`}>
                               <EyeOutlined style={{ fontSize: "18px" }} />
                             </Link>
                           </Button>
-                          {/* <Button style={{lineHeight: 0}} type="danger" onClick={() => showConfirm(record._id)}>
-                            <DeleteOutlined style={{fontSize: '18px'}} />
-                          </Button> */}
                         </Space>
                       )}
                     />
