@@ -147,6 +147,24 @@ function Sidenav({ color }) {
     </svg>,
   ];
 
+  const recordingIcon = (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      key={1} // You can adjust the key as needed
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18ZM10 16C13.3137 16 16 13.3137 16 10C16 6.68629 13.3137 4 10 4C6.68629 4 4 6.68629 4 10C4 13.3137 6.68629 16 10 16ZM10 9C10.5523 9 11 8.55228 11 8V6C11 5.44772 10.5523 5 10 5C9.44772 5 9 5.44772 9 6V8C9 8.55228 9.44772 9 10 9ZM7 8V6C7 3.79086 8.79086 2 11 2C13.2091 2 15 3.79086 15 6V8C15 8.55228 15.4477 9 16 9C16.5523 9 17 8.55228 17 8V6C17 2.68629 14.3137 0 11 0C7.68629 0 5 2.68629 5 6V8C5 8.55228 5.44772 9 6 9C6.55228 9 7 8.55228 7 8Z"
+        fill={color} // Remember to provide the appropriate color variable
+      ></path>
+    </svg>
+  );
+
   return (
     <>
       <div className="brand">
@@ -180,59 +198,21 @@ function Sidenav({ color }) {
             <span className="label">Users</span>
           </NavLink>
         </Menu.Item>
-        {/* <Menu.Item key="3">
-          <NavLink to="/billing">
+        <Menu.Item key="3">
+          <NavLink to="/call_records">
             <span
               className="icon"
               style={{
-                background: page === "billing" ? color : "",
+                background: page === "call_records" ? color : "",
               }}
             >
-              {billing}
+              {recordingIcon}
             </span>
-            <span className="label">Billing</span>
+            <span className="label">Call Records</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="4">
-          <NavLink to="/rtl">
-            <span
-              className="icon"
-              style={{
-                background: page === "rtl" ? color : "",
-              }}
-            >
-              {rtl}
-            </span>
-            <span className="label">RTL</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item className="menu-item-header" key="5">
-          Account Pages
-        </Menu.Item>
-        <Menu.Item key="6">
-          <NavLink to="/profile">
-            <span
-              className="icon"
-              style={{
-                background: page === "profile" ? color : "",
-              }}
-            >
-              {profile}
-            </span>
-            <span className="label">Profile</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="7">
-          <NavLink to="/sign-in">
-            <span className="icon">{signin}</span>
-            <span className="label">Sign In</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="8">
-          <NavLink to="/sign-up">
-            <span className="icon">{signup}</span>
-            <span className="label">Sign Up</span>
-          </NavLink>
+        {/* <Menu.Item className="menu-item-header" key="5">
+          Others
         </Menu.Item> */}
       </Menu>
       <div className="aside-footer">
