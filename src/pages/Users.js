@@ -1,30 +1,25 @@
+import { Row, Col, Card, Table, Button, Modal, Space, Input } from "antd";
+import Highlighter from "react-highlight-words";
+import { toast } from "react-toastify";
 import {
-    Row,
-    Col,
-    Card,
-    Table,
-    Button,
-    Modal,
-    Space,
-    Input
-  } from "antd";
-  import Highlighter from 'react-highlight-words';
-  import { toast } from 'react-toastify';
-  import { EyeOutlined, DeleteOutlined, ExclamationCircleOutlined, SearchOutlined } from "@ant-design/icons";
-  import { useEffect, useState, useRef } from "react";
-  import { Link } from "react-router-dom";
+  EyeOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
+import { useEffect, useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import Loader from "../components/shared/loader/Loader";
-  const { confirm } = Modal;
-  const { Column } = Table;
-  
-  function Users() {
-    const [users, setUsers] = useState([]);
-    const [userUpdate, setUserUpdate] = useState(false);
+const { confirm } = Modal;
+const { Column } = Table;
 
+function Users() {
+  const [users, setUsers] = useState([]);
+  const [userUpdate, setUserUpdate] = useState(false);
 
-    // user search functionality
-    const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
+  // user search functionality
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -35,7 +30,7 @@ import Loader from "../components/shared/loader/Loader";
 
   const handleReset = (clearFilters) => {
     clearFilters();
-    setSearchText('');
+    setSearchText("");
   };
 
   const getColumnSearchProps = (dataIndex) => ({
@@ -43,11 +38,11 @@ import Loader from "../components/shared/loader/Loader";
       setSelectedKeys,
       selectedKeys,
       confirm,
-      clearFilters
+      clearFilters,
     }) => (
       <div
         style={{
-          padding: 8
+          padding: 8,
         }}
       >
         <Input
@@ -60,7 +55,7 @@ import Loader from "../components/shared/loader/Loader";
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{
             marginBottom: 8,
-            display: 'block'
+            display: "block",
           }}
         />
         <Space>
@@ -70,7 +65,7 @@ import Loader from "../components/shared/loader/Loader";
             icon={<SearchOutlined />}
             size="small"
             style={{
-              width: 90
+              width: 90,
             }}
           >
             Search
@@ -79,7 +74,7 @@ import Loader from "../components/shared/loader/Loader";
             onClick={() => clearFilters && handleReset(clearFilters)}
             size="small"
             style={{
-              width: 90
+              width: 90,
             }}
           >
             Reset
@@ -89,7 +84,7 @@ import Loader from "../components/shared/loader/Loader";
             size="small"
             onClick={() => {
               confirm({
-                closeDropdown: false
+                closeDropdown: false,
               });
               setSearchText(selectedKeys[0]);
               setSearchedColumn(dataIndex);
@@ -103,7 +98,7 @@ import Loader from "../components/shared/loader/Loader";
     filterIcon: (filtered) => (
       <SearchOutlined
         style={{
-          color: filtered ? '#1890ff' : undefined
+          color: filtered ? "#1890ff" : undefined,
         }}
       />
     ),
@@ -118,90 +113,89 @@ import Loader from "../components/shared/loader/Loader";
       searchedColumn === dataIndex ? (
         <Highlighter
           highlightStyle={{
-            backgroundColor: '#ffc069',
-            padding: 0
+            backgroundColor: "#ffc069",
+            padding: 0,
           }}
           searchWords={[searchText]}
           autoEscape
-          textToHighlight={text ? text.toString() : ''}
+          textToHighlight={text ? text.toString() : ""}
         />
       ) : (
         text
-      )
+      ),
   });
-   
-    useEffect(() => {
-      // Replace 'your-bearer-token' with the actual Bearer token you have
-      const token = JSON.parse(localStorage.getItem("token"));
 
-      const getAllUsers = async () => {
-        try {
-          const response = await fetch('https://chat.linkfy.org/api/v1/user', {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          });
+  useEffect(() => {
+    // Replace 'your-bearer-token' with the actual Bearer token you have
+    const token = JSON.parse(localStorage.getItem("token"));
 
-          if (response.ok) {
-            const data = await response.json();
-            setUsers(data.reverse());
-          } else {
-            console.error('Error while fetching data:', response);
-          }
-        } catch (error) {
-          console.error('Error while fetching data:', error);
+    const getAllUsers = async () => {
+      // const response = await fetch('https://chat.linkfy.org/api/v1/user',
+      try {
+        const response = await fetch("http://localhost:8000/api/v1/user", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUsers(data.reverse());
+        } else {
+          console.error("Error while fetching data:", response);
         }
-      };
-
-      getAllUsers();
-    }, []);
-  
-    const showConfirm = (id) => {
-      confirm({
-        title: 'Do you Want to delete these items?',
-        icon: <ExclamationCircleOutlined />,
-        content:
-          'After click on delete then your item will be delete permanently.',
-        okText: 'Delete',
-        okType: 'danger',
-  
-        onOk() {
-          fetch(`https://chat.linkfy.org/api/v1/user/${id}`, {
-            method: 'DELETE',
-            headers: {
-              'content-type': 'application/json'
-            }
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              toast.success('User Deleted Successfully', {
-                autoClose: 1000
-              });
-              
-            });
-        },
-  
-        onCancel() {
-          console.log('Cancel');
-        }
-      });
+      } catch (error) {
+        console.error("Error while fetching data:", error);
+      }
     };
 
-    const [isLoading, setIsLoading] = useState(false);
-    
-    useEffect(() => {
-      setTimeout(() => {
-        setIsLoading(true)
-      }, 1500)
-    })
-    
-    return (
-      <>
-        {
-          isLoading ?
-          <div className="tabled">
+    getAllUsers();
+  }, []);
+
+  const showConfirm = (id) => {
+    confirm({
+      title: "Do you Want to delete these items?",
+      icon: <ExclamationCircleOutlined />,
+      content:
+        "After click on delete then your item will be delete permanently.",
+      okText: "Delete",
+      okType: "danger",
+
+      onOk() {
+        fetch(`https://chat.linkfy.org/api/v1/user/${id}`, {
+          method: "DELETE",
+          headers: {
+            "content-type": "application/json",
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            toast.success("User Deleted Successfully", {
+              autoClose: 1000,
+            });
+          });
+      },
+
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(true);
+    }, 1500);
+  });
+
+  return (
+    <>
+      {isLoading ? (
+        <div className="tabled">
           <Row gutter={[24, 0]}>
             <Col xs="24" xl={24}>
               <Card
@@ -211,10 +205,24 @@ import Loader from "../components/shared/loader/Loader";
               >
                 <div className="table-responsive">
                   <Table dataSource={users} className="ant-border-space">
-                    <Column title="UID" dataIndex="uid" key="uid" {...getColumnSearchProps("uid")} />
+                    <Column
+                      title="UID"
+                      dataIndex="uid"
+                      key="uid"
+                      {...getColumnSearchProps("uid")}
+                    />
                     <Column title="Name" dataIndex="userName" key="userName" />
-                    <Column title="Email" dataIndex="email" key="email" {...getColumnSearchProps("email")} />
-                    <Column title="Phone" dataIndex="userPhone" key="userPhone" />
+                    <Column
+                      title="Email"
+                      dataIndex="email"
+                      key="email"
+                      {...getColumnSearchProps("email")}
+                    />
+                    <Column
+                      title="Phone"
+                      dataIndex="userPhone"
+                      key="userPhone"
+                    />
                     <Column title="Gender" dataIndex="gender" key="gender" />
                     <Column title="DOB" dataIndex="dob" key="dob" />
                     <Column
@@ -222,9 +230,16 @@ import Loader from "../components/shared/loader/Loader";
                       key="view"
                       render={(_, record) => (
                         <Space size="middle">
-                          <Button style={{lineHeight: 0, background:'#AB1A93', border:'none'}} type="primary">
+                          <Button
+                            style={{
+                              lineHeight: 0,
+                              background: "#AB1A93",
+                              border: "none",
+                            }}
+                            type="primary"
+                          >
                             <Link to={`/profile/${record._id}`}>
-                              <EyeOutlined style={{fontSize: '18px'}} />
+                              <EyeOutlined style={{ fontSize: "18px" }} />
                             </Link>
                           </Button>
                           {/* <Button style={{lineHeight: 0}} type="danger" onClick={() => showConfirm(record._id)}>
@@ -239,11 +254,11 @@ import Loader from "../components/shared/loader/Loader";
             </Col>
           </Row>
         </div>
-        :
+      ) : (
         <Loader />
-        }
-      </>
-    );
-  }
-  
-  export default Users;
+      )}
+    </>
+  );
+}
+
+export default Users;

@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Users from "./pages/Users";
 import CallRecords from "./pages/CallRecords";
 import CallHistory from "./pages/CallHistory";
+import SingleProfile from "./components/shared/profile/SingleProfile";
 
 function App() {
   const user = JSON.parse(localStorage.getItem("token"));
@@ -24,7 +25,7 @@ function App() {
             <Route exact path="/users" component={Users} />
             <Route exact path="/billing" component={Billing} />
             <Route exact path="/call_records" component={CallRecords} />
-            <Route exact path="/profile/:id" component={Profile} />
+            <Route exact path="/profile/:id" component={SingleProfile} />
             <Route exact path="/call_history/:id" component={CallHistory} />
             <Redirect from="*" to="/dashboard" />
           </Main>

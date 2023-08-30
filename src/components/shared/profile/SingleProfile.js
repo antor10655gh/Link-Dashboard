@@ -1,15 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./SingleProfile.css";
-import { Button, Tabs } from "antd";
+import { Button, Modal, Select, Tabs } from "antd";
 import * as timeago from "timeago.js";
 import {
   AndroidOutlined,
+  ExclamationCircleOutlined,
   PauseCircleOutlined,
   PlayCircleOutlined,
   RightOutlined,
 } from "@ant-design/icons";
+import { useParams } from "react-router-dom";
+import confirm from "antd/lib/modal/confirm";
+const { Option } = Select;
 
-const SingleProfile = ({ profile }) => {
+const SingleProfile = () => {
+  const [newProfile, setNewProfile] = useState({});
+  const [profile, setProfile] = useState({});
+
+  const { id } = useParams();
+
+  const newProfileGet = () => {
+    const token = JSON.parse(localStorage.getItem("token"));
+    fetch(`http://localhost:8000/api/v1/user/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        // Update the state with the new profile data
+        setProfile(json.data[0]);
+        console.log(json);
+      });
+  };
+
+  useEffect(() => {
+    newProfileGet();
+  }, [newProfile]);
+
   const journeyTime = timeago.format(`${profile.createdAt}`, "en_US");
 
   const journey = journeyTime.replace(" ago", "");
@@ -24,6 +54,133 @@ const SingleProfile = ({ profile }) => {
 
   const handleRecord = () => {
     setRecording(!recording);
+  };
+
+  // handle block function
+  const handleBlock = () => {
+    const updatedProfile = { ...newProfile, restrictions: "blocked" };
+    const token = JSON.parse(localStorage.getItem("token"));
+    fetch(`http://localhost:8000/api/v1/user/update/${profile._id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedProfile),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        // Update the state with the new profile data
+        setNewProfile(json);
+        newProfileGet();
+        console.log(json);
+      });
+  };
+
+  // handle temporary block function
+  const handleTemporaryBlock = (timeDuration) => {
+    const updatedProfile = { ...newProfile, restrictions: timeDuration };
+    const token = JSON.parse(localStorage.getItem("token"));
+    fetch(`http://localhost:8000/api/v1/user/update/${profile._id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedProfile),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        // Update the state with the new profile data
+        setNewProfile(json);
+        newProfileGet();
+        console.log(json);
+      });
+  };
+
+  // handle unlock function
+  const handleUnblock = () => {
+    const updatedProfile = { ...newProfile, restrictions: "released" };
+    const token = JSON.parse(localStorage.getItem("token"));
+    fetch(`http://localhost:8000/api/v1/user/update/${profile._id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedProfile),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        // Update the state with the new profile data
+        setNewProfile(json);
+        newProfileGet();
+        console.log(json);
+      });
+  };
+
+  const [selectedDuration, setSelectedDuration] = useState("3_days");
+
+  const showConfirm = (actionName) => {
+    const durations = ["3_days", "7_days", "15_days", "30_days"]; // List of available durations
+
+    Modal.confirm({
+      title: `Do you want to ${actionName} him/her?`,
+      icon: (
+        <ExclamationCircleOutlined
+          style={{ color: actionName === "block" ? "red" : "green" }}
+        />
+      ),
+      content: `After clicking on Yes, he/she will be ${actionName}.`,
+      okText: "Yes",
+      okType: "primary",
+      cancelText: "No",
+
+      onOk() {
+        if (actionName === "block") {
+          handleBlock();
+        } else if (actionName === "unblock") {
+          handleUnblock();
+        } else if (actionName === "temp_block") {
+          // Show the duration selection when temporary block is clicked
+          Modal.info({
+            title: "Select Temporary Block Duration",
+            content: (
+              <Select
+                defaultValue={selectedDuration}
+                onChange={(value) => setSelectedDuration(value)}
+              >
+                {durations.map((duration) => (
+                  <Option key={duration} value={duration}>
+                    {duration}
+                  </Option>
+                ))}
+              </Select>
+            ),
+            okText: "Confirm",
+            onOk() {
+              console.log(selectedDuration);
+              // Handle temporary block with selectedDuration
+              handleTemporaryBlock(selectedDuration);
+            },
+          });
+        }
+      },
+    });
+  };
+
+  const temporaryBlock = {
+    lineHeight: 0,
+    background: "#76A21E",
+    border: "none",
+    display: profile.restrictions === "released" ? "none" : "block",
+  };
+
+  const recordButton = {
+    backgroundColor: recording ? "#D9534F" : "#4CACBC",
+    color: "white",
+    border: "none",
+    display: profile.restrictions === "released" ? "block" : "none",
   };
 
   return (
@@ -160,36 +317,38 @@ const SingleProfile = ({ profile }) => {
             <Tabs.TabPane tab="Action" key="4">
               <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
                 <Button
-                  style={{
-                    lineHeight: 0,
-                    background: "#D71313",
-                    border: "none",
-                  }}
-                  type="primary"
+                  disabled={profile.restrictions === "blocked"}
+                  onClick={() => showConfirm("block")}
+                  type="danger"
                 >
-                  Block
+                  {profile.restrictions === "blocked" ? "Blocked" : "Block"}
                 </Button>
                 <Button
-                  style={{
-                    lineHeight: 0,
-                    background: "#F94C10",
-                    border: "none",
-                  }}
+                  onClick={() => showConfirm("temp_block")}
+                  disabled={
+                    profile.restrictions === "3_days" ||
+                    profile.restrictions === "7_days" ||
+                    profile.restrictions === "15_days" ||
+                    profile.restrictions === "30_days"
+                  }
                   type="primary"
                 >
-                  Temporary Block
+                  {profile.restrictions === "3_days" ||
+                  profile.restrictions === "7_days" ||
+                  profile.restrictions === "15_days" ||
+                  profile.restrictions === "30_days"
+                    ? "Temporary Blocked"
+                    : "Temporary Block"}
                 </Button>
                 <Button
-                  style={{
-                    lineHeight: 0,
-                    background: "#76A21E",
-                    border: "none",
-                  }}
+                  onClick={() => showConfirm("unblock")}
+                  style={temporaryBlock}
                   type="primary"
                 >
                   Unblock
                 </Button>
                 <Button
+                  style={recordButton}
                   onClick={handleRecord}
                   icon={
                     recording ? <PauseCircleOutlined /> : <PlayCircleOutlined />

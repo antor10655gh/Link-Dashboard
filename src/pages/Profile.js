@@ -30,23 +30,21 @@ import convesionImg5 from "../assets/images/face-2.jpg";
 import project1 from "../assets/images/home-decor-1.jpeg";
 import project2 from "../assets/images/home-decor-2.jpeg";
 import project3 from "../assets/images/home-decor-3.jpeg";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import SingleProfile from "../components/shared/profile/SingleProfile";
 
 function Profile() {
   const [profile, setProfile] = useState({});
-  const {id} = useParams();
+  const { id } = useParams();
 
   const token = JSON.parse(localStorage.getItem("token"));
-
+  //chat.linkfy.org/api/v1/user/${id}
   useEffect(() => {
-    fetch(
-      `https://chat.linkfy.org/api/v1/user/${id}`
-    ,{
-      method: 'GET',
+    fetch(`http://localhost:8000/api/v1/user/${id}`, {
+      method: "GET",
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
     })
       .then((res) => res.json())
