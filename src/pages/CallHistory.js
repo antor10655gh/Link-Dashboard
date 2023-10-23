@@ -16,7 +16,7 @@ const CallHistory = () => {
   const token = JSON.parse(localStorage.getItem("token"));
 
   useEffect(() => {
-    fetch(`https://chat.linkfy.org/api/v1/user/${id}`, {
+    fetch(`http://31.172.83.135:1212/api/v1/user/${id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

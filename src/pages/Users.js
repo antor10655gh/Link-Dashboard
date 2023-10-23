@@ -130,9 +130,9 @@ function Users() {
     const token = JSON.parse(localStorage.getItem("token"));
 
     const getAllUsers = async () => {
-      // const response = await fetch('https://chat.linkfy.org/api/v1/user',
+      // const response = await fetch('http://31.172.83.135:1212/api/v1/user',
       try {
-        const response = await fetch("http://localhost:8000/api/v1/user", {
+        const response = await fetch("http://31.172.83.135:1212/api/v1/user", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -164,7 +164,7 @@ function Users() {
       okType: "danger",
 
       onOk() {
-        fetch(`https://chat.linkfy.org/api/v1/user/${id}`, {
+        fetch(`http://31.172.83.135:1212/api/v1/user/${id}`, {
           method: "DELETE",
           headers: {
             "content-type": "application/json",
@@ -184,17 +184,17 @@ function Users() {
     });
   };
 
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(true);
-    }, 1500);
-  });
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setIsLoading(true);
+  //   }, 1500);
+  // });
 
   return (
     <>
-      {isLoading ? (
+      {users.length > 0 ? (
         <div className="tabled">
           <Row gutter={[24, 0]}>
             <Col xs="24" xl={24}>
@@ -211,7 +211,41 @@ function Users() {
                       key="uid"
                       {...getColumnSearchProps("uid")}
                     />
-                    <Column title="Name" dataIndex="userName" key="userName" />
+                    <Column
+                      title="Name"
+                      key="userName"
+                      render={(_, record) => (
+                        <>
+                          {record.isActive === true ? (
+                            <div style={{ display: "flex", gap: "5px" }}>
+                              <div
+                                style={{
+                                  color: "red",
+                                  width: "8px",
+                                  height: "8px",
+                                  borderRadius: "50%",
+                                  backgroundColor: "#16FF00",
+                                }}
+                              ></div>
+                              {record.userName}
+                            </div>
+                          ) : (
+                            <div style={{ display: "flex", gap: "5px" }}>
+                              <div
+                                style={{
+                                  color: "red",
+                                  width: "8px",
+                                  height: "8px",
+                                  borderRadius: "50%",
+                                  backgroundColor: "red",
+                                }}
+                              ></div>
+                              {record.userName}
+                            </div>
+                          )}
+                        </>
+                      )}
+                    />
                     <Column
                       title="Email"
                       dataIndex="email"

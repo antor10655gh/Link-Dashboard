@@ -145,7 +145,7 @@ function CallRecords() {
 
     const getAllUsers = async () => {
       try {
-        const response = await fetch("https://chat.linkfy.org/api/v1/user", {
+        const response = await fetch("http://31.172.83.135:1212/api/v1/user", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -177,7 +177,7 @@ function CallRecords() {
       okType: "Primary",
 
       onOk() {
-        fetch(`https://chat.linkfy.org/api/v1/user/${id}`, {
+        fetch(`http://31.172.83.135:1212/api/v1/user/${id}`, {
           method: "DELETE",
           headers: {
             "content-type": "application/json",
@@ -197,17 +197,17 @@ function CallRecords() {
     });
   };
 
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(true);
-    }, 1500);
-  });
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setIsLoading(true);
+  //   }, 1500);
+  // });
 
   return (
     <>
-      {isLoading ? (
+      {users.length > 0 ? (
         <div className="tabled">
           <Row gutter={[24, 0]}>
             <Col xs="24" xl={24}>

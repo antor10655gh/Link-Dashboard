@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./SingleProfile.css";
 import { Button, Modal, Select, Tabs } from "antd";
+import avatar from "../../../assets/images/avatar.jpg";
 import * as timeago from "timeago.js";
 import {
   AndroidOutlined,
@@ -21,7 +22,7 @@ const SingleProfile = () => {
 
   const newProfileGet = () => {
     const token = JSON.parse(localStorage.getItem("token"));
-    fetch(`http://localhost:8000/api/v1/user/${id}`, {
+    fetch(`http://31.172.83.135:1212/api/v1/user/${id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -60,7 +61,7 @@ const SingleProfile = () => {
   const handleBlock = () => {
     const updatedProfile = { ...newProfile, restrictions: "blocked" };
     const token = JSON.parse(localStorage.getItem("token"));
-    fetch(`http://localhost:8000/api/v1/user/update/${profile._id}`, {
+    fetch(`http://31.172.83.135:1212/api/v1/user/update/${profile._id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -81,7 +82,7 @@ const SingleProfile = () => {
   const handleTemporaryBlock = (timeDuration) => {
     const updatedProfile = { ...newProfile, restrictions: timeDuration };
     const token = JSON.parse(localStorage.getItem("token"));
-    fetch(`http://localhost:8000/api/v1/user/update/${profile._id}`, {
+    fetch(`http://31.172.83.135:1212/api/v1/user/update/${profile._id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -102,7 +103,7 @@ const SingleProfile = () => {
   const handleUnblock = () => {
     const updatedProfile = { ...newProfile, restrictions: "released" };
     const token = JSON.parse(localStorage.getItem("token"));
-    fetch(`http://localhost:8000/api/v1/user/update/${profile._id}`, {
+    fetch(`http://31.172.83.135:1212/api/v1/user/update/${profile._id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -138,6 +139,7 @@ const SingleProfile = () => {
 
       onOk() {
         if (actionName === "block") {
+          console.log(actionName);
           handleBlock();
         } else if (actionName === "unblock") {
           handleUnblock();
@@ -189,7 +191,10 @@ const SingleProfile = () => {
         <div className="profile-left">
           <div>
             <div className="profile-img">
-              <img src={profile.profilePic} alt="" />
+              <img
+                src={profile.profilePic === "N/A" ? avatar : profile.profilePic}
+                alt=""
+              />
             </div>
             <div className="profile-info-container">
               <h1>{profile.userName}</h1>

@@ -1,33 +1,46 @@
-import {
-  Card,
-  Col,
-  Row,
-  Typography,
-} from "antd";
+import { Card, Col, Row, Typography } from "antd";
 import { useEffect, useState, useRef } from "react";
 import Echart from "../components/chart/EChart";
 import LineChart from "../components/chart/LineChart";
 function Home() {
   const [users, setUsers] = useState([]);
+  const [activeUsers, setActiveUsers] = useState([]);
   console.log(users);
 
   const { Title } = Typography;
 
   const token = JSON.parse(localStorage.getItem("token"));
 
+  // fetch the user collection
   useEffect(() => {
-    fetch('https://chat.linkfy.org/api/v1/user', {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data);
-            setUsers(data);
-          })
+    fetch("http://31.172.83.135:1212/api/v1/user", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setUsers(data);
+      });
+  }, []);
+
+  // get the active user collection
+  useEffect(() => {
+    fetch("http://31.172.83.135:1212/api/v1/user/activeUsers", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setActiveUsers(data);
+      });
   }, []);
 
   const dollar = [
@@ -120,7 +133,7 @@ function Home() {
     {
       today: "Total User",
       title: `${users?.length}`,
-      icon:  profile,
+      icon: profile,
       bnb: "bnb2",
     },
     {
@@ -131,7 +144,7 @@ function Home() {
     },
     {
       today: "Online Users",
-      title: "+1,200",
+      title: `${activeUsers?.length}`,
       icon: heart,
       bnb: "redtext",
     },
@@ -180,9 +193,7 @@ function Home() {
                   <Row align="middle" gutter={[24, 0]}>
                     <Col xs={18}>
                       <span>{c.today}</span>
-                      <Title level={3}>
-                        {c.title}
-                      </Title>
+                      <Title level={3}>{c.title}</Title>
                     </Col>
                     <Col xs={6}>
                       <div className="icon-box">{c.icon}</div>
